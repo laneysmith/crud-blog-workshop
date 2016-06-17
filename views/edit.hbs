@@ -1,0 +1,6 @@
+<h3>Edit Post</h3>
+<form action="/{{post.id}}/edit" method="POST">
+  <input type="text" name="title" placeholder="Title" value="{{post.title}}">
+  <textarea name="body">{{post.body}}</textarea>
+  <button type="submit">Submit Edits</button>
+</form>

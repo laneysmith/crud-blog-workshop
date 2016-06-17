@@ -3,29 +3,20 @@ var router = express.Router();
 var knex = require('../db/knex');
 var pg = require('pg');
 
-/* GET home page. */
-// router.get('/', function(req, res, next) {
-//   knex('host')
-//   .select(["host.name as Host", "parasite.name as Parasite"])
-//   .join('host_parasite', function() {
-//     this.on("host.id", "=", "host_parasite.host_id")
-//   })
-//   .join('parasite', function() {
-//     this.on("parasite.id", "=", "host_parasite.parasite_id")
-//   })
-//   .then(function(rows){
-//     res.render('index', { title: 'Express', rows: rows });
-//   })
-//   .catch(function(error){
-//     console.log(error);
-//     next(error)
-//   })
-// });
-
-// get blog posts
-router.get('/', function(req, res) {
+// Populate all blog posts on index page
+router.get('/', function(req, res, next) {
     knex('post')
-    .select('post.body', 'post.title', 'user.username')
+    .select(
+      // 'post',
+      'post.id',
+      'post.created_at',
+      'post.title',
+      'user.username',
+      'post.body',
+      'comment'
+      // knex.raw('COUNT(comment)')
+    )
+    // .groupBy('post.id')
     .join('user', function() {
       this.on("author_id", "=", "user.id")
     })
@@ -33,7 +24,7 @@ router.get('/', function(req, res) {
       this.on("post_id", "=", "post.id")
     })
     .then(function(posts){
-      console.log(posts);
+      // console.log(posts);
       res.render('index', {posts: posts});
     })
     .catch(function(error){
@@ -42,5 +33,72 @@ router.get('/', function(req, res) {
     })
 });
 
+// Populate blog post & comments on permalink page
+router.get('/:id', function(req, res, next){
+  console.log('req.params.id = ' + req.params.id);
+  return Promise.all([
+    knex('post')
+      .join('user', function() {
+        this.on("post.author_id", "=", "user.id")
+      })
+      .where("post.id", req.params.id)
+      .first(),
+    knex('comment')
+      .join('user', function() {
+        this.on("comment.author_id", "=", "user.id")
+      })
+      .where("comment.post_id", req.params.id)
+  ])
+  .then(function(data){
+    res.render('permalink', {postDetail: data[0], postComments: data[1]})
+  })
+  .catch(function(error){
+    console.log(error);
+    next(error)
+  })
+})
+
+// Add comment to permalink page
+router.post('/:id/', function(req, res, next) {
+  knex('comment').insert(req.body).then(function(){
+    res.redirect('/');
+  }).catch(function(error) {
+    console.log(error);
+    next(error)
+  })
+});
+
+// Edit blog post
+router.get('/:id/edit', function(req, res, next) {
+  knex('post').where({id: req.params.id}).first().then(function(data) {
+    res.render('edit', {post: data})
+  })
+});
+router.post('/:id/edit', function(req, res, next) {
+  knex('post').where({id: req.params.id}).update(req.body).then(function () {
+    res.redirect('/' + req.params.id);
+  })
+});
+
+// Delete blog post
+router.get('/:id/delete', function(req, res, next) {
+  knex('post').where({id: req.params.id}).del().then(function(data) {
+    res.redirect('/');
+  })
+});
+
+// Post detail page
+// router.get('/:id', function(req, res, next) {
+//   knex('post')
+//     .where({id: req.params.id})
+//     .first()
+//     .join('comment', function() {
+//       this.on("post_id", "=", "post.id")
+//     })
+//     .then(function(data) {
+//     console.log(data);
+//     res.render('post', {post: data});
+//   })
+// });
 
 module.exports = router;

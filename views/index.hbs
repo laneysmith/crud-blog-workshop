@@ -1,9 +1,8 @@
 <h1>{{title}}</h1>
 <p>Welcome to {{title}}</p>
 
-
 {{#each posts}}
-<h3>{{this.title}}</h3>
-<p>Posted by {{this.username}}<p>
-<p>{{this.body}}</p>
+  <h3><a href="/{{this.id}}">{{this.title}}</a></h3>
+  <p>Posted by {{this.username}} <i class="fa fa-comment-o"></i><p>
+  <p>{{this.body}}</p>
 {{/each}}

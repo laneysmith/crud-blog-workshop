@@ -1,0 +1,23 @@
+<a href="/"><< Home</a>
+
+<h2>{{postDetail.title}}</h2>
+<p>
+  Posted by {{postDetail.username}}
+  <a href="/{{postDetail.id}}/edit" class="button">Edit Post</a>
+  <a href="/{{postDetail.id}}/delete" class="button">Delete Post</a>
+<p>
+<p>
+  {{postDetail.body}}
+</p>
+
+<h4><i class="fa fa-comment-o"></i> <u>Comments</u></h4>
+{{#each postComments}}
+  <p><b>{{this.username}}</b>: {{this.body}}</p>
+{{/each}}
+
+<h4><i class="fa fa-plus"></i> <u>Add a Comment</u></h4>
+<form action="/{{post.id}}/" method="POST">
+  <input type="text" name="username" placeholder="username">
+  <textarea name="body" placeholder="comment"></textarea>
+  <button type="submit">Add Comment</button>
+</form>

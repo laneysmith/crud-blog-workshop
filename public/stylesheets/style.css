@@ -2,7 +2,31 @@ body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+* {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
 
 a {
   color: #00B7FF;
+}
+a.button {
+  font-size: 0.8em;
+  padding: 4px 10px;
+  -webkit-appearance: button;
+  -moz-appearance: button;
+  appearance: button;
+  text-decoration: none;
+  color: initial;
+}
+
+h4 {
+  padding-top: 2em;
+}
+
+input, textarea {
+  width: 250px;
+  display: block;
+  padding: 5px;
+  margin: 10px 0;
 }
