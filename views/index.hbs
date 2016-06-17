@@ -1,2 +1,9 @@
 <h1>{{title}}</h1>
 <p>Welcome to {{title}}</p>
+
+
+{{#each posts}}
+<h3>{{this.title}}</h3>
+<p>Posted by {{this.username}}<p>
+<p>{{this.body}}</p>
+{{/each}}

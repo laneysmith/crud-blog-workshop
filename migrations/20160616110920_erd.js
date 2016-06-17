@@ -19,17 +19,16 @@ exports.up = function(knex, Promise) {
       table.increments();
       table.timestamp('created_at')
       table.integer('author_id').references('id').inTable('user');
-      table.integer('post_id').references('post.id');
-      table.text('body');
+      table.integer('post_id').references('post.id'); 
     });
   })
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('comment')
+  return knex.schema.dropTableIfExists('comment')
   .then(function(){
-    return knex.schema.dropTable('post');
+    return knex.schema.dropTableIfExists('post');
   }).then(function(){
-    return knex.schema.dropTable('user');
+    return knex.schema.dropTableIfExists('user');
   })
 };

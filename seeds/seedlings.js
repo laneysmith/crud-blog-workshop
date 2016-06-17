@@ -1,5 +1,7 @@
 exports.seed = function(knex, Promise) {
+  // return knex.raw('TRUNCATE TABLE comment, "user", post RESTART IDENTITY CASCADE;');
   var will, lucas, lucy;
+
   return knex('comment').del()
   .then(function() {return knex('post').del()})
   .then(function() {return knex('user').del()})
@@ -7,6 +9,10 @@ exports.seed = function(knex, Promise) {
   .then(posts)
   .then(postIds)
   .then(seedComment);
+
+  function deleteTable(tableName) {
+    return knex(tableName).del();
+  }
 
   function users() {
     return Promise.join(
@@ -39,8 +45,8 @@ exports.seed = function(knex, Promise) {
         author_id: will
       }).returning('id'),
       knex('post').insert({
-        title: '',
-        body: '',
+        title: 'Blah',
+        body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
         author_id: lucas
       }).returning('id'),
       knex('post').insert({
