@@ -24,7 +24,7 @@ h4 {
   padding-top: 2em;
 }
 
-input, textarea {
+input, textarea, select {
   width: 250px;
   display: block;
   padding: 5px;

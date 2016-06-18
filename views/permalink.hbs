@@ -3,11 +3,11 @@
 <h2>{{postDetail.title}}</h2>
 <p>
   Posted by {{postDetail.username}}
-  <a href="/{{postDetail.id}}/edit" class="button">Edit Post</a>
-  <a href="/{{postDetail.id}}/delete" class="button">Delete Post</a>
+  <a href="/{{postDetail.postId}}/edit" class="button">Edit Post</a>
+  <a href="/{{postDetail.postId}}/delete" class="button">Delete Post</a>
 <p>
 <p>
-  {{postDetail.body}}
+  {{postDetail.postBody}}
 </p>
 
 <h4><i class="fa fa-comment-o"></i> <u>Comments</u></h4>
@@ -16,8 +16,16 @@
 {{/each}}
 
 <h4><i class="fa fa-plus"></i> <u>Add a Comment</u></h4>
-<form action="/{{post.id}}/" method="POST">
-  <input type="text" name="username" placeholder="username">
-  <textarea name="body" placeholder="comment"></textarea>
+<form action="/{{postDetail.postId}}/" method="POST">
+  <label for="username">Username:</label>
+  <input name="post_id" value="{{postDetail.postId}}" type="hidden">
+  <select id="username" name="author_id">
+    <option disabled selected>---</option>
+    {{#each usernames}}
+      <option value="{{this.id}}">{{this.username}}</option>
+    {{/each}}
+  </select>
+  <label for="comment">Comment:</label>
+  <textarea name="body" id="comment" placeholder="comment"></textarea>
   <button type="submit">Add Comment</button>
 </form>

@@ -7,25 +7,21 @@ var pg = require('pg');
 router.get('/', function(req, res, next) {
     knex('post')
     .select(
-      // 'post',
       'post.id',
       'post.created_at',
       'post.title',
       'user.username',
       'post.body',
       'comment'
-      // knex.raw('COUNT(comment)')
     )
-    // .groupBy('post.id')
     .join('user', function() {
       this.on("author_id", "=", "user.id")
     })
-    .join('comment', function() {
+    .rightJoin('comment', function() {
       this.on("post_id", "=", "post.id")
     })
     .then(function(posts){
-      // console.log(posts);
-      res.render('index', {posts: posts});
+      res.render('index', {posts: posts, title: 'THIS BLOG'});
     })
     .catch(function(error){
       console.log(error);
@@ -35,9 +31,9 @@ router.get('/', function(req, res, next) {
 
 // Populate blog post & comments on permalink page
 router.get('/:id', function(req, res, next){
-  console.log('req.params.id = ' + req.params.id);
   return Promise.all([
     knex('post')
+    .select('post.id as postId', 'post.title as title', 'post.body as postBody', 'user.username as username')
       .join('user', function() {
         this.on("post.author_id", "=", "user.id")
       })
@@ -47,10 +43,12 @@ router.get('/:id', function(req, res, next){
       .join('user', function() {
         this.on("comment.author_id", "=", "user.id")
       })
-      .where("comment.post_id", req.params.id)
+      .where("comment.post_id", req.params.id),
+    knex('user')
+      .select('user.username', 'user.id')
   ])
   .then(function(data){
-    res.render('permalink', {postDetail: data[0], postComments: data[1]})
+    res.render('permalink', {postDetail: data[0], postComments: data[1], usernames: data[2]})
   })
   .catch(function(error){
     console.log(error);
@@ -61,19 +59,21 @@ router.get('/:id', function(req, res, next){
 // Add comment to permalink page
 router.post('/:id/', function(req, res, next) {
   knex('comment').insert(req.body).then(function(){
-    res.redirect('/');
+    res.redirect('/' + req.params.id);
   }).catch(function(error) {
     console.log(error);
     next(error)
   })
 });
 
-// Edit blog post
+// Populate post data on edit page
 router.get('/:id/edit', function(req, res, next) {
   knex('post').where({id: req.params.id}).first().then(function(data) {
     res.render('edit', {post: data})
   })
 });
+
+// Edit/update blog post functionality
 router.post('/:id/edit', function(req, res, next) {
   knex('post').where({id: req.params.id}).update(req.body).then(function () {
     res.redirect('/' + req.params.id);
@@ -86,19 +86,5 @@ router.get('/:id/delete', function(req, res, next) {
     res.redirect('/');
   })
 });
-
-// Post detail page
-// router.get('/:id', function(req, res, next) {
-//   knex('post')
-//     .where({id: req.params.id})
-//     .first()
-//     .join('comment', function() {
-//       this.on("post_id", "=", "post.id")
-//     })
-//     .then(function(data) {
-//     console.log(data);
-//     res.render('post', {post: data});
-//   })
-// });
 
 module.exports = router;
