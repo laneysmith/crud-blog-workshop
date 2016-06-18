@@ -11,15 +11,12 @@ router.get('/', function(req, res, next) {
       'post.created_at',
       'post.title',
       'user.username',
-      'post.body',
-      'comment'
+      'post.body'
     )
     .join('user', function() {
       this.on("author_id", "=", "user.id")
     })
-    .rightJoin('comment', function() {
-      this.on("post_id", "=", "post.id")
-    })
+
     .then(function(posts){
       res.render('index', {posts: posts, title: 'THIS BLOG'});
     })
