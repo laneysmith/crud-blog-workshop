@@ -16,7 +16,6 @@ router.get('/', function(req, res, next) {
     .join('user', function() {
       this.on("author_id", "=", "user.id")
     })
-
     .then(function(posts){
       res.render('index', {posts: posts, title: 'THIS BLOG'});
     })
@@ -30,13 +29,14 @@ router.get('/', function(req, res, next) {
 router.get('/:id', function(req, res, next){
   return Promise.all([
     knex('post')
-    .select('post.id as postId', 'post.title as title', 'post.body as postBody', 'user.username as username')
+      .select('post.id as postId', 'post.title as title', 'post.body as postBody', 'user.username as username')
       .join('user', function() {
         this.on("post.author_id", "=", "user.id")
       })
       .where("post.id", req.params.id)
       .first(),
     knex('comment')
+      .select('comment.author_id as authorId', 'user.id as userId', 'comment.id as commentId', 'user.username', 'comment.body')
       .join('user', function() {
         this.on("comment.author_id", "=", "user.id")
       })
@@ -60,6 +60,13 @@ router.post('/:id/', function(req, res, next) {
   }).catch(function(error) {
     console.log(error);
     next(error)
+  })
+});
+
+// Delete comment from permalink page
+router.get('/:postId/:commentId/deleteComment', function(req, res, next) {
+  knex('comment').where({id: req.params.commentId}).del().then(function(data) {
+    res.redirect('/' + req.params.postId);
   })
 });
 

@@ -12,7 +12,10 @@
 
 <h4><i class="fa fa-comment-o"></i> <u>Comments</u></h4>
 {{#each postComments}}
-  <p><b>{{this.username}}</b>: {{this.body}}</p>
+  <p>
+    <a href="/{{../postDetail.postId}}/{{this.commentId}}/deleteComment" class="button">Delete</a>
+    <b>{{this.username}}</b>: {{this.body}}
+  </p>
 {{/each}}
 
 <h4><i class="fa fa-plus"></i> <u>Add a Comment</u></h4>
