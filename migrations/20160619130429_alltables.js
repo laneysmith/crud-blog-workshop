@@ -1,4 +1,3 @@
-
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('user', function(table) {
     table.increments();
@@ -9,7 +8,7 @@ exports.up = function(knex, Promise) {
   }).then(function(){
     return knex.schema.createTable('post', function(table) {
       table.increments();
-      table.timestamp('created_at')
+      table.timestamp('created_at').defaultTo(knex.fn.now());
       table.integer('author_id').references('user.id');
       table.string('title');
       table.text('body');
@@ -17,9 +16,10 @@ exports.up = function(knex, Promise) {
   }).then(function(){
     return knex.schema.createTable('comment', function(table) {
       table.increments();
-      table.timestamp('created_at')
+      table.timestamp('created_at').defaultTo(knex.fn.now());
       table.integer('author_id').references('id').inTable('user');
-      table.integer('post_id').references('post.id'); 
+      table.integer('post_id').references('post.id');
+      table.text('body');
     });
   })
 };

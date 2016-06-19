@@ -4,7 +4,7 @@ module.exports = {
 
   development: {
     client: 'pg',
-    connection: 'postgres://localhost/crud_blog_workshop'
+    connection: 'postgres://localhost/crud_blog'
   },
 
   production: {

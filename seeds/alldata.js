@@ -10,10 +10,6 @@ exports.seed = function(knex, Promise) {
   .then(postIds)
   .then(seedComment);
 
-  function deleteTable(tableName) {
-    return knex(tableName).del();
-  }
-
   function users() {
     return Promise.join(
       knex('user').insert({
