@@ -16,8 +16,8 @@ router.get('/', function(req, res, next) {
     .join('user', function() {
       this.on("author_id", "=", "user.id")
     })
-    .then(function(posts){
-      res.render('index', {posts: posts, title: 'THIS BLOG'});
+    .then(function(data){
+      res.render('index', {posts: data, title: 'THIS BLOG'});
     })
     .catch(function(error){
       console.log(error);
@@ -29,7 +29,7 @@ router.get('/', function(req, res, next) {
 router.get('/:id', function(req, res, next){
   return Promise.all([
     knex('post')
-      .select('post.id as postId', 'post.title as title', 'post.body as postBody', 'user.username as username')
+      .select('post.id as postId', 'post.title as title', 'post.created_at as date', 'post.body as postBody', 'user.username as username')
       .join('user', function() {
         this.on("post.author_id", "=", "user.id")
       })

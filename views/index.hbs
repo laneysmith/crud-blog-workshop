@@ -2,6 +2,6 @@
 
 {{#each posts}}
   <h3><a href="/{{this.id}}">{{this.title}}</a></h3>
-  <p>Posted by {{this.username}}<p>
+  <p>Posted by {{this.username}} on {{this.created_at}}<p>
   <p>{{this.body}}</p>
 {{/each}}

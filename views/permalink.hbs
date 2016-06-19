@@ -2,9 +2,9 @@
 
 <h2>{{postDetail.title}}</h2>
 <p>
-  Posted by {{postDetail.username}}
   <a href="/{{postDetail.postId}}/edit" class="button">Edit Post</a>
   <a href="/{{postDetail.postId}}/delete" class="button">Delete Post</a>
+  Posted by {{postDetail.username}} on {{postDetail.date}}
 <p>
 <p>
   {{postDetail.postBody}}
