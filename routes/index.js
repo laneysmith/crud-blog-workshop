@@ -5,7 +5,7 @@ var pg = require('pg');
 
 // Populate all blog posts on index page
 router.get('/', function(req, res, next) {
-    knex('post')
+  knex('post')
     .select(
       'post.id',
       'post.created_at',
@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
       'post.body'
     )
     .join('user', function() {
-      this.on("author_id", "=", "user.id")
+      this.on("post.author_id", "=", "user.id")
     })
     .then(function(data){
       res.render('index', {posts: data, title: 'THIS BLOG'});
@@ -29,20 +29,35 @@ router.get('/', function(req, res, next) {
 router.get('/:id', function(req, res, next){
   return Promise.all([
     knex('post')
-      .select('post.id as postId', 'post.title as title', 'post.created_at as date', 'post.body as postBody', 'user.username as username')
+      .select(
+        'post.id as postId',
+        'post.title as title',
+        'post.created_at as date',
+        'post.body as postBody',
+        'user.username as username'
+      )
       .join('user', function() {
         this.on("post.author_id", "=", "user.id")
       })
       .where("post.id", req.params.id)
       .first(),
     knex('comment')
-      .select('comment.author_id as authorId', 'user.id as userId', 'comment.id as commentId', 'user.username', 'comment.body')
+      .select(
+        'comment.author_id as authorId',
+        'user.id as userId',
+        'comment.id as commentId',
+        'user.username',
+        'comment.body'
+      )
       .join('user', function() {
         this.on("comment.author_id", "=", "user.id")
       })
       .where("comment.post_id", req.params.id),
     knex('user')
-      .select('user.username', 'user.id')
+      .select(
+        'user.username',
+        'user.id'
+      )
   ])
   .then(function(data){
     res.render('permalink', {postDetail: data[0], postComments: data[1], usernames: data[2]})
