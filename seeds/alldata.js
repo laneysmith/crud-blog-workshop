@@ -1,6 +1,5 @@
 exports.seed = function(knex, Promise) {
   // return knex.raw('TRUNCATE TABLE comment, "user", post RESTART IDENTITY CASCADE;');
-  var will, lucas, lucy;
 
   return knex('comment').del()
   .then(function() {return knex('post').del()})
@@ -33,7 +32,7 @@ exports.seed = function(knex, Promise) {
   function posts(ids) {
     will = ids[0][0];
     lucas = ids[1][0];
-    lucy = ids[2][0];
+    lucy = ids[2][0]
     return Promise.join(
       knex('post').insert({
         title: 'Beavers',
@@ -50,20 +49,27 @@ exports.seed = function(knex, Promise) {
         body: 'Birthday party this weekend, let\'s all get trollied!',
         author_id: lucy
       }).returning('id')
-    );
+    ).then(function(post_ids){
+      return {
+        post_ids: post_ids,
+        will: ids[0][0],
+        lucas: ids[1][0],
+        lucy: ids[2][0]
+      }
+    });
   }
 
-  function postIds(postIds) {
+  function postIds(data) {
     return {
       posts: {
-        zero: postIds[0][0],
-        one: postIds[1][0],
-        two: postIds[2][0]
+        zero: data.post_ids[0][0],
+        one: data.post_ids[1][0],
+        two: data.post_ids[2][0]
       },
       users: {
-        will: will,
-        lucas: lucas,
-        lucy: lucy
+        will: data.will,
+        lucas: data.lucas,
+        lucy: data.lucy
       }
     };
   }
