@@ -101,9 +101,14 @@ router.post('/:id/edit', function(req, res, next) {
 
 // Delete blog post
 router.get('/:id/delete', function(req, res, next) {
-  knex('post').where({id: req.params.id}).del().then(function(data) {
-    res.redirect('/');
-  })
+  knex('comment').where({post_id: req.params.id}).del().then(
+    function(){
+      knex('post').where({id: req.params.id}).del().then(function(data) {
+        res.redirect('/');
+      })
+    }
+  )
+
 });
 
 module.exports = router;
